@@ -1,0 +1,12 @@
+datasheets/*
+*.zip
+*.step
+.generated_files
+coilgun.X/build
+coilgun.X/debug
+coilgun.X/dist
+coilgun.X/firmware
+coilgun.X/nbproject/private
+*~*~
+*.swp
+*.swo

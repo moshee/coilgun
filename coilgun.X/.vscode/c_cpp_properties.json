@@ -1,0 +1,53 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "C:\\msys64\\mingw64\\bin\\gcc.exe",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "windows-gcc-x64"
+        },
+        {
+            "name": "samc20",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/SAMC20_DFP/3.4.76/samc20/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "G:\\Apps\\arm-none-eabi\\bin\\arm-none-eabi-gcc.exe",
+            "cStandard": "c11",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-arm",
+            "compilerArgs": [
+                "-mcpu=cortex-m0plus",
+                "-x c",
+                "-c",
+                "-D__SAMC20J16A__",
+                "-mthumb",
+                "-I \"C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/SAMC20_DFP/3.4.76/samc20/include\"",
+                "-I \"C:/Program Files/Microchip/MPLABX/v6.00/packs/arm/CMSIS/5.4.0/CMSIS/Core/Include\"",
+                "-Os",
+                "-ffunction-sections",
+                "-mlong-calls",
+                "-Wall",
+                "-Werror",
+                "-MP",
+                "-MMD",
+                "-MF"
+            ]
+        }
+    ],
+    "version": 4
+}
