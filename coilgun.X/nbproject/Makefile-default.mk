@@ -109,74 +109,74 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/startup_samc20j16a.o: startup_samc20j16a.c  .generated_files/flags/default/dcd1ba65b0510132a978f4785388aafb9b30f049 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/startup_samc20j16a.o: startup_samc20j16a.c  .generated_files/flags/default/12e69a33afd6c9f4a8f51cf5dd3114172a0ecdda .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/startup_samc20j16a.o.d 
 	@${RM} ${OBJECTDIR}/startup_samc20j16a.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus -g -D__DEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/startup_samc20j16a.o.d" -o ${OBJECTDIR}/startup_samc20j16a.o startup_samc20j16a.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/system_samc20j16a.o: system_samc20j16a.c  .generated_files/flags/default/64a99dab2a49ded65415aa86657895e1dd0f08f3 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/system_samc20j16a.o: system_samc20j16a.c  .generated_files/flags/default/e05dfbd87f75a6dbafe2dcf1fceec5e2e67554be .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/system_samc20j16a.o.d 
 	@${RM} ${OBJECTDIR}/system_samc20j16a.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus -g -D__DEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/system_samc20j16a.o.d" -o ${OBJECTDIR}/system_samc20j16a.o system_samc20j16a.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/e45d480b6cbf4302b90af25893d905c048c6f4f5 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/48c377b6f87c2eef556ec593042729274da2d724 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main.o.d 
 	@${RM} ${OBJECTDIR}/main.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus -g -D__DEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/main.o.d" -o ${OBJECTDIR}/main.o main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/coilgun.o: coilgun.c  .generated_files/flags/default/41e7b652d6f6d7eb551d97ea6c4ff3722cc002c7 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/coilgun.o: coilgun.c  .generated_files/flags/default/332b69a6abfbc893f06c589ad0d6a46efd4c152f .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/coilgun.o.d 
 	@${RM} ${OBJECTDIR}/coilgun.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus -g -D__DEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/coilgun.o.d" -o ${OBJECTDIR}/coilgun.o coilgun.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/driver.o: driver.c  .generated_files/flags/default/d7b2c676689db201861813392a09909d1dc1988b .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/driver.o: driver.c  .generated_files/flags/default/f084039f3b5052f646415448d46b572d53e6d90f .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/driver.o.d 
 	@${RM} ${OBJECTDIR}/driver.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus -g -D__DEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/driver.o.d" -o ${OBJECTDIR}/driver.o driver.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/plib_clock.o: plib_clock.c  .generated_files/flags/default/64e637073edeeb273d10a3692ca1410291916bc0 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/plib_clock.o: plib_clock.c  .generated_files/flags/default/81efa7167adca8760541943992753e649a16cc74 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/plib_clock.o.d 
 	@${RM} ${OBJECTDIR}/plib_clock.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus -g -D__DEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/plib_clock.o.d" -o ${OBJECTDIR}/plib_clock.o plib_clock.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 else
-${OBJECTDIR}/startup_samc20j16a.o: startup_samc20j16a.c  .generated_files/flags/default/ae467e1409a4ca5e31a72f61b243d9f2d3f3b7ce .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/startup_samc20j16a.o: startup_samc20j16a.c  .generated_files/flags/default/7ebbb31c30d5fa26fce7a28e6640e27a395d4734 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/startup_samc20j16a.o.d 
 	@${RM} ${OBJECTDIR}/startup_samc20j16a.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/startup_samc20j16a.o.d" -o ${OBJECTDIR}/startup_samc20j16a.o startup_samc20j16a.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/system_samc20j16a.o: system_samc20j16a.c  .generated_files/flags/default/229cafc6a516433199a22dd0845a93b2c9ce3ac5 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/system_samc20j16a.o: system_samc20j16a.c  .generated_files/flags/default/7c7ce45965cc1487d7daaea6164a6dd9b7b5306a .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/system_samc20j16a.o.d 
 	@${RM} ${OBJECTDIR}/system_samc20j16a.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/system_samc20j16a.o.d" -o ${OBJECTDIR}/system_samc20j16a.o system_samc20j16a.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/46fac9c640b68652b4792d144329d17397634387 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/c169a5d0d9e2bb6271ba4eb2ab2d755336fdf7c2 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main.o.d 
 	@${RM} ${OBJECTDIR}/main.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/main.o.d" -o ${OBJECTDIR}/main.o main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/coilgun.o: coilgun.c  .generated_files/flags/default/861e6a5d07aff1d00af33d66331d79517d4e14de .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/coilgun.o: coilgun.c  .generated_files/flags/default/fc1e5fa4e87ed16a57eaae5bb06dd6f8693a5035 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/coilgun.o.d 
 	@${RM} ${OBJECTDIR}/coilgun.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/coilgun.o.d" -o ${OBJECTDIR}/coilgun.o coilgun.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/driver.o: driver.c  .generated_files/flags/default/3e015cb093a9adac4056dbb893f31e6ce4b95abe .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/driver.o: driver.c  .generated_files/flags/default/826db1314eb3815a34a405f089c9c72e369917bd .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/driver.o.d 
 	@${RM} ${OBJECTDIR}/driver.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/driver.o.d" -o ${OBJECTDIR}/driver.o driver.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/plib_clock.o: plib_clock.c  .generated_files/flags/default/f9d4bb27845a0ac02f20f9972a5c35f19e7a2be3 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+${OBJECTDIR}/plib_clock.o: plib_clock.c  .generated_files/flags/default/10b8dc536fe8df8e041257fede1a45e038868af9 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/plib_clock.o.d 
 	@${RM} ${OBJECTDIR}/plib_clock.o 

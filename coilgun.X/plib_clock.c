@@ -44,16 +44,19 @@
 
 
 
-static void OSCCTRL_Initialize(void)
-{
+static void OSCCTRL_Initialize(void) {
     /****************** XOSC Initialization   ********************************/
 
 
     /* Configure External Oscillator */
-    OSCCTRL_REGS->OSCCTRL_XOSCCTRL = (uint16_t)(OSCCTRL_XOSCCTRL_STARTUP(0UL) | OSCCTRL_XOSCCTRL_GAIN(3UL) | OSCCTRL_XOSCCTRL_XTALEN_Msk | OSCCTRL_XOSCCTRL_ENABLE_Msk);
+    OSCCTRL_REGS->OSCCTRL_XOSCCTRL = (uint16_t)(
+                                     OSCCTRL_XOSCCTRL_STARTUP(0UL)
+                                   | OSCCTRL_XOSCCTRL_GAIN(3UL)
+                                   | OSCCTRL_XOSCCTRL_XTALEN_Msk
+                                   | OSCCTRL_XOSCCTRL_ENABLE_Msk
+                                   );
 
-    while((OSCCTRL_REGS->OSCCTRL_STATUS & OSCCTRL_STATUS_XOSCRDY_Msk) != OSCCTRL_STATUS_XOSCRDY_Msk)
-    {
+    while ((OSCCTRL_REGS->OSCCTRL_STATUS & OSCCTRL_STATUS_XOSCRDY_Msk) != OSCCTRL_STATUS_XOSCRDY_Msk) {
         /* Waiting for the XOSC Ready state */
     }
 
@@ -77,30 +80,28 @@ static void OSCCTRL_Initialize(void)
 #endif
 }
 
-static void OSC32KCTRL_Initialize(void)
-{
+static void OSC32KCTRL_Initialize(void) {
     OSC32KCTRL_REGS->OSC32KCTRL_OSC32K = 0x0UL;
 
     OSC32KCTRL_REGS->OSC32KCTRL_RTCCTRL = OSC32KCTRL_RTCCTRL_RTCSEL(0UL);
 }
 
-static void FDPLL_Initialize(void)
-{
+static void FDPLL_Initialize(void) {
 
     /****************** DPLL Initialization  *********************************/
 
     // 16MHz XOSC source
-    // pre-divide by 2*(7 + 1) = 16 to get within DPLL's 32kHz-2MHz input range
+    // pre-divide by 2*(15 + 1) = 32 to get within DPLL's 32kHz-2MHz input range
     OSCCTRL_REGS->OSCCTRL_DPLLCTRLB = OSCCTRL_DPLLCTRLB_FILTER(0UL)
                                     | OSCCTRL_DPLLCTRLB_LTIME(0UL)
                                     | OSCCTRL_DPLLCTRLB_REFCLK_XOSC
-                                    | OSCCTRL_DPLLCTRLB_DIV(7);
+                                    | OSCCTRL_DPLLCTRLB_DIV(15);
 
 
-    // multiply 1 MHz by (47 + 1 + 0/16) = 48
+    // multiply 500 kHz by (95 + 1 + 0/16) = 96
     OSCCTRL_REGS->OSCCTRL_DPLLRATIO = OSCCTRL_DPLLRATIO_LDRFRAC(0UL)
-                                    | OSCCTRL_DPLLRATIO_LDR(47UL);
-    OSCCTRL_REGS->OSCCTRL_DPLLPRESC = OSCCTRL_DPLLPRESC_PRESC_DIV2;
+                                    | OSCCTRL_DPLLRATIO_LDR(95UL);
+    OSCCTRL_REGS->OSCCTRL_DPLLPRESC = OSCCTRL_DPLLPRESC_PRESC_DIV1;
 
     while ((OSCCTRL_REGS->OSCCTRL_DPLLSYNCBUSY & OSCCTRL_DPLLSYNCBUSY_DPLLRATIO_Msk) == OSCCTRL_DPLLSYNCBUSY_DPLLRATIO_Msk) {
         /* Waiting for the synchronization */
@@ -109,28 +110,37 @@ static void FDPLL_Initialize(void)
     /* Selection of the DPLL Enable */
     OSCCTRL_REGS->OSCCTRL_DPLLCTRLA = (uint8_t)(OSCCTRL_DPLLCTRLA_ENABLE_Msk);
 
-    while((OSCCTRL_REGS->OSCCTRL_DPLLSYNCBUSY & OSCCTRL_DPLLSYNCBUSY_ENABLE_Msk) == OSCCTRL_DPLLSYNCBUSY_ENABLE_Msk ) {
+    while ((OSCCTRL_REGS->OSCCTRL_DPLLSYNCBUSY & OSCCTRL_DPLLSYNCBUSY_ENABLE_Msk) == OSCCTRL_DPLLSYNCBUSY_ENABLE_Msk) {
         /* Waiting for the DPLL enable synchronization */
     }
 
-    while((OSCCTRL_REGS->OSCCTRL_DPLLSTATUS & (OSCCTRL_DPLLSTATUS_LOCK_Msk | OSCCTRL_DPLLSTATUS_CLKRDY_Msk)) !=
+    while ((OSCCTRL_REGS->OSCCTRL_DPLLSTATUS & (OSCCTRL_DPLLSTATUS_LOCK_Msk | OSCCTRL_DPLLSTATUS_CLKRDY_Msk)) !=
                 (OSCCTRL_DPLLSTATUS_LOCK_Msk | OSCCTRL_DPLLSTATUS_CLKRDY_Msk)) {
         /* Waiting for the Ready state */
     }
 }
 
+static void gclk_sync(int mask) {
+    while (GCLK_REGS->GCLK_SYNCBUSY & mask);
+}
 
-static void GCLK0_Initialize(void)
-{
+static void GCLK_Initialize(void) {
+    // 2 wait states needed for 48MHz operation
+    NVMCTRL_REGS->NVMCTRL_CTRLB = NVMCTRL_CTRLB_MANW_Msk
+                                | NVMCTRL_CTRLB_RWS_DUAL;
 
     GCLK_REGS->GCLK_GENCTRL[0] = GCLK_GENCTRL_DIVSEL_DIV1
                                | GCLK_GENCTRL_SRC_DPLL96M
-                               | GCLK_GENCTRL_GENEN_Msk;
+                               | GCLK_GENCTRL_GENEN_Msk
+                               | GCLK_GENCTRL_IDC_Msk
+                               ;
 
-    while((GCLK_REGS->GCLK_SYNCBUSY & GCLK_SYNCBUSY_GENCTRL0_Msk) == GCLK_SYNCBUSY_GENCTRL0_Msk)
-    {
-        /* wait for the Generator 0 synchronization */
-    }
+    gclk_sync(GCLK_SYNCBUSY_GENCTRL0_Msk);
+
+}
+
+static void pchctrl_sync(int i) {
+    while ((GCLK_REGS->GCLK_PCHCTRL[i] & GCLK_PCHCTRL_CHEN_Msk) != GCLK_PCHCTRL_CHEN_Msk);
 }
 
 void CLOCK_Initialize (void) {
@@ -141,134 +151,38 @@ void CLOCK_Initialize (void) {
     OSC32KCTRL_Initialize();
 
     FDPLL_Initialize();
-    GCLK0_Initialize();
-
+    GCLK_Initialize();
 
     /* Selection of the Generator and write Lock for SERCOM1_CORE */
-    GCLK_REGS->GCLK_PCHCTRL[20] = GCLK_PCHCTRL_GEN(0x0UL)  | GCLK_PCHCTRL_CHEN_Msk;
+    GCLK_REGS->GCLK_PCHCTRL[20] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
+    pchctrl_sync(20);
 
-    while ((GCLK_REGS->GCLK_PCHCTRL[20] & GCLK_PCHCTRL_CHEN_Msk) != GCLK_PCHCTRL_CHEN_Msk)
-    {
-        /* Wait for synchronization */
-    }
     /* Selection of the Generator and write Lock for SERCOM2_CORE */
-    GCLK_REGS->GCLK_PCHCTRL[21] = GCLK_PCHCTRL_GEN(0x0UL)  | GCLK_PCHCTRL_CHEN_Msk;
+    GCLK_REGS->GCLK_PCHCTRL[21] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
+    pchctrl_sync(21);
 
-    while ((GCLK_REGS->GCLK_PCHCTRL[21] & GCLK_PCHCTRL_CHEN_Msk) != GCLK_PCHCTRL_CHEN_Msk)
-    {
-        /* Wait for synchronization */
-    }
     /* Selection of the Generator and write Lock for SERCOM3_CORE */
-    GCLK_REGS->GCLK_PCHCTRL[22] = GCLK_PCHCTRL_GEN(0x0UL)  | GCLK_PCHCTRL_CHEN_Msk;
+    GCLK_REGS->GCLK_PCHCTRL[22] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
+    pchctrl_sync(22);
 
-    while ((GCLK_REGS->GCLK_PCHCTRL[22] & GCLK_PCHCTRL_CHEN_Msk) != GCLK_PCHCTRL_CHEN_Msk)
-    {
-        /* Wait for synchronization */
-    }
     /* Selection of the Generator and write Lock for TCC0 TCC1 */
-    GCLK_REGS->GCLK_PCHCTRL[28] = GCLK_PCHCTRL_GEN(0x0UL)  | GCLK_PCHCTRL_CHEN_Msk;
+    GCLK_REGS->GCLK_PCHCTRL[28] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
+    pchctrl_sync(28);
 
-    while ((GCLK_REGS->GCLK_PCHCTRL[28] & GCLK_PCHCTRL_CHEN_Msk) != GCLK_PCHCTRL_CHEN_Msk)
-    {
-        /* Wait for synchronization */
-    }
     /* Selection of the Generator and write Lock for TC2 TC3 */
-    GCLK_REGS->GCLK_PCHCTRL[31] = GCLK_PCHCTRL_GEN(0x0UL)  | GCLK_PCHCTRL_CHEN_Msk;
+    GCLK_REGS->GCLK_PCHCTRL[31] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
+    pchctrl_sync(31);
 
-    while ((GCLK_REGS->GCLK_PCHCTRL[31] & GCLK_PCHCTRL_CHEN_Msk) != GCLK_PCHCTRL_CHEN_Msk)
-    {
-        /* Wait for synchronization */
-    }
     /* Selection of the Generator and write Lock for ADC0 */
-    GCLK_REGS->GCLK_PCHCTRL[33] = GCLK_PCHCTRL_GEN(0x0UL)  | GCLK_PCHCTRL_CHEN_Msk;
-
-    while ((GCLK_REGS->GCLK_PCHCTRL[33] & GCLK_PCHCTRL_CHEN_Msk) != GCLK_PCHCTRL_CHEN_Msk)
-    {
-        /* Wait for synchronization */
-    }
-
-
+    GCLK_REGS->GCLK_PCHCTRL[33] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
+    pchctrl_sync(33);
 
     /* Configure the APBC Bridge Clocks */
-    MCLK_REGS->MCLK_APBCMASK = 0x2c21cU;
-
-
+    MCLK_REGS->MCLK_APBCMASK = MCLK_APBCMASK_SERCOM1_Msk
+                             | MCLK_APBCMASK_SERCOM2_Msk
+                             | MCLK_APBCMASK_SERCOM3_Msk
+                             | MCLK_APBCMASK_TCC0_Msk
+                             | MCLK_APBCMASK_TC2_Msk
+                             | MCLK_APBCMASK_TC3_Msk
+                             | MCLK_APBCMASK_ADC0_Msk;
 }
-
-#if 0
-void CfgDPLLfor48MhzRunCpu(void) {
-    /* change the flash wait states */
-    NVMCTRL->CTRLB.bit.RWS = 3;
-    /* change the OSC48M to run at 24MHz */
-    //OSCCTRL->OSC48MDIV.reg = 1;
-
-    ///*  configure GCLK1 to be the source for DPLL */
-    GCLK_GENCTRL_Type genctrl_1;
-    genctrl_1.bit.DIV = 16,      /* Division Factor get a 1MHz clock */
-    //genctrl_1.bit.DIV = 24,      /* Division Factor get a 1MHz clock */
-    genctrl_1.bit.RUNSTDBY = 0;  /* Run in Standby */
-    genctrl_1.bit.DIVSEL = 0;    /* Divide Selection */
-    genctrl_1.bit.OE = 0;        /* Output Enable */
-    genctrl_1.bit.OOV = 0;       /* Output Off Value */
-    genctrl_1.bit.IDC = 1;       /* Improve Duty Cycle */
-    genctrl_1.bit.GENEN = 1;     /* Generator Enable */
-    //genctrl_1.bit.SRC = GCLK_GENCTRL_SRC_OSC48M_Val; /* Generator Clock Source */
-    genctrl_1.bit.SRC = GCLK_GENCTRL_SRC_XOSC_Val;
-    GCLK->GENCTRL[1].reg = genctrl_1.reg;
-
-    GCLK_REGS->GCLK_GENCTRL = GCLK_GENCTRL
-
-
-    ///* FDPLL96M input clock source for reference */
-    GCLK_PCHCTRL_Type pchctrl_0;
-    pchctrl_0.bit.WRTLOCK = 0;
-    pchctrl_0.bit.CHEN = 1;
-    pchctrl_0.bit.GEN = GCLK_PCHCTRL_GEN_GCLK1;
-    GCLK->PCHCTRL[0].reg = pchctrl_0.reg;
-
-
-
-    /* set the ratio to 48MHz */
-    OSCCTRL_DPLLRATIO_Type dpllratio;
-    dpllratio.bit.LDRFRAC = 0;
-    dpllratio.bit.LDR = 47;
-    //dpllratio.bit.LDR = 2;
-    OSCCTRL->DPLLRATIO.reg = dpllratio.reg;
-
-
-
-    /* configure the DPLL and use GCLK as the reference clock */
-    OSCCTRL_DPLLCTRLB_Type dpllctrlb;
-    dpllctrlb.bit.DIV = 0;       /* XOSC clock division factor */
-    dpllctrlb.bit.LBYPASS = 0;   /* DPLL Lock signal drives the DPLL controller internal logic */
-    dpllctrlb.bit.LTIME = 0;     /* No time-out. Automatic lock */
-    //dpllctrlb.bit.REFCLK = 2;  /* GCLK clock reference */
-    dpllctrlb.bit.REFCLK = 1;    /* XOSC clock reference */
-    dpllctrlb.bit.WUF = 0;       /* DPLL clock is output after startup and lock time */
-    dpllctrlb.bit.LPEN = 0;      /* low-power mode is disabled. Time to Digital Converter is enabled */
-    dpllctrlb.bit.FILTER = 0;    /* Default filter mode */
-    OSCCTRL->DPLLCTRLB.reg = dpllctrlb.reg;
-
-
-
-    /* leave the DPLL output at 96MHz, can be used to the TCC blocks */
-    OSCCTRL->DPLLPRESC.reg = 0;
-
-
-
-    /* Enable the DPLL */
-    OSCCTRL_DPLLCTRLA_Type dpllctrla;
-    dpllctrla.bit.ONDEMAND = 0, /* The DPLL is disabled if no peripheral is requesting the clock source */
-    dpllctrla.bit.RUNSTDBY = 0, /* The DPLL is disabled in standby sleep mode if no peripheral requests the clock */
-    dpllctrla.bit.ENABLE = 1,   /* The DPLL is enabled */
-    OSCCTRL->DPLLCTRLA.reg = dpllctrla.reg;
-
-    while (true) {
-        bool ready = ((OSCCTRL->DPLLSTATUS.reg &
-               (OSCCTRL_DPLLSTATUS_CLKRDY | OSCCTRL_DPLLSTATUS_LOCK)) ==
-               (OSCCTRL_DPLLSTATUS_CLKRDY | OSCCTRL_DPLLSTATUS_LOCK));
-
-        if (ready) break;
-    }
-}
-#endif

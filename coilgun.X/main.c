@@ -18,18 +18,18 @@ struct {
 } prog;
 
 void blink(void) {
-    PORT_REGS->GROUP[1].PORT_OUTTGL = (PIN_LED1 | PIN_LED2);
+    PORT_REGS->GROUP[1].PORT_OUTTGL = (PIN_LED1 | PIN_LED0);
 }
 
 int main(void) {
     WDT_REGS->WDT_CTRLA = 0;
 
     CLOCK_Initialize();
-    // SysTick_Config(48000);
+    SysTick_Config(48000);
 
-    SysTick->LOAD = 48000 - 1;
-    SysTick->VAL = 0;
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
+    // SysTick->LOAD = 48000 - 1;
+    // SysTick->VAL = 0;
+    // SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
 
     cg_timer_init(&prog.blinker, 500, blink);
 
@@ -56,7 +56,6 @@ int main(void) {
     prog.blinker.enable = 1;
 
     for (;;) {
-        PORT_REGS->GROUP[1].PORT_OUTTGL = PIN_LED0;
     }
 
     return (EXIT_SUCCESS);
