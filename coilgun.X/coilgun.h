@@ -1,9 +1,9 @@
 #ifndef _COILGUN_H_
 #define _COILGUN_H_
 
-#include <stdint.h>
-
 #include "samc20j16a.h"
+#include "machinery.h"
+#include "driver.h"
 
 #define PIN_TXD PORT_PA00
 #define PIN_RXD PORT_PA01
@@ -51,23 +51,57 @@
 #define PIN_VEL_N PORT_PB31
 #define PIN_INJ_ENBL PORT_PB02
 
-// State machine state definition.
-typedef enum state {
-    STATE_IDLE,
-    STATE_ARMED,
-    STATE_FIRING,
-    STATE_CHARGING,
-    STATE_EDIT
-} cg_state_t;
+typedef struct cg_prog {
+    cg_sm_t sm_main;
+    cg_sm_t sm_display;
 
-typedef struct cg_timer {
-    uint32_t _cnt;
-    uint32_t reload;
-    uint8_t enable;
-    void (*callback)(void);
-} cg_timer_t;
+    cg_timer_t blinker;
+    uint32_t blink_mask;
 
-void cg_timer_init(cg_timer_t *t, uint32_t duration, void (*callback)(void));
-void cg_timer_tick(cg_timer_t *t);
+    cg_timer_t frame;
+
+    quadrature_t q;
+
+    uint32_t eic_events;
+} cg_prog_t;
+
+extern cg_prog_t prog;
+
+void cg_init(cg_prog_t *prog);
+
+/**
+ * Message ID definitions. They should be defined as bit masks so that they can
+ * be ORed together to denote state machine subscriptions.
+ */
+#define MSG_TICK BIT(1)
+#define MSG_CONTROL BIT(2)
+#define MSG_TCNT BIT(3)
+#define MSG_FRAME BIT(4)
+
+enum MSG_CONTROL_Val {
+    MSG_CONTROL_SW0_ON,
+    MSG_CONTROL_SW0_OFF,
+    MSG_CONTROL_SW1_ON,
+    MSG_CONTROL_SW1_OFF,
+    MSG_CONTROL_SW2_ON,
+    MSG_CONTROL_SW2_OFF,
+    MSG_CONTROL_ENC_PRESS,
+    MSG_CONTROL_ENC_RELEASE,
+    MSG_CONTROL_ENC_UP,
+    MSG_CONTROL_ENC_DOWN
+};
+
+cg_sm_ret_t state_idle(cg_sm_t *const sm, const mq_msg_t *const msg);
+cg_sm_ret_t state_armed(cg_sm_t *const sm, const mq_msg_t *const msg);
+cg_sm_ret_t state_charging(cg_sm_t *const sm, const mq_msg_t *const msg);
+cg_sm_ret_t state_charging_done(cg_sm_t *const sm, const mq_msg_t *const msg);
+cg_sm_ret_t state_firing(cg_sm_t *const sm, const mq_msg_t *const msg);
+cg_sm_ret_t state_menu(cg_sm_t *const sm, const mq_msg_t *const msg);
+
+void timer_blink(void);
+void blink_set(uint32_t msk);
+void blink_clr(uint32_t msk);
+
+void timer_frame(void);
 
 #endif

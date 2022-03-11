@@ -14,9 +14,23 @@ extern "C" {
 
 #include "samc20j16a.h"
 
-port_group_registers_t *PORTA, *PORTB;
+#define BIT(x) (1 << (x))
+
+// port_group_registers_t *PORTA, *PORTB;
+
+#define PORTA 0
+#define PORTB 1
 
 void driver_init(void);
+void port_set(const uint32_t port, uint32_t val);
+void port_write(const uint32_t port, uint32_t val);
+void port_clear(const uint32_t port, uint32_t val);
+void port_toggle(const uint32_t port, uint32_t val);
+uint32_t port_read(const uint32_t port);
+void port_dirset(const uint32_t port, uint32_t val);
+void port_dirwrite(const uint32_t port, uint32_t val);
+void port_dirclear(const uint32_t port, uint32_t val);
+void port_dirtoggle(const uint32_t port, uint32_t val);
 
 #ifdef	__cplusplus
 }

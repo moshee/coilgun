@@ -139,7 +139,11 @@ static void GCLK_Initialize(void) {
 
 }
 
-static void pchctrl_sync(int i) {
+/**
+ * Enable the peripheral clock using the source GCLK_PCHCTRL_GEN_GCLK* as a source
+ */
+static void pchctrl_enable(int i, uint32_t source) {
+    GCLK_REGS->GCLK_PCHCTRL[i] = source | GCLK_PCHCTRL_CHEN_Msk;
     while ((GCLK_REGS->GCLK_PCHCTRL[i] & GCLK_PCHCTRL_CHEN_Msk) != GCLK_PCHCTRL_CHEN_Msk);
 }
 
@@ -153,36 +157,28 @@ void CLOCK_Initialize (void) {
     FDPLL_Initialize();
     GCLK_Initialize();
 
-    /* Selection of the Generator and write Lock for SERCOM1_CORE */
-    GCLK_REGS->GCLK_PCHCTRL[20] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
-    pchctrl_sync(20);
+    /**
+     * Enable peripheral clocks
+     */
 
-    /* Selection of the Generator and write Lock for SERCOM2_CORE */
-    GCLK_REGS->GCLK_PCHCTRL[21] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
-    pchctrl_sync(21);
-
-    /* Selection of the Generator and write Lock for SERCOM3_CORE */
-    GCLK_REGS->GCLK_PCHCTRL[22] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
-    pchctrl_sync(22);
-
-    /* Selection of the Generator and write Lock for TCC0 TCC1 */
-    GCLK_REGS->GCLK_PCHCTRL[28] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
-    pchctrl_sync(28);
-
-    /* Selection of the Generator and write Lock for TC2 TC3 */
-    GCLK_REGS->GCLK_PCHCTRL[31] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
-    pchctrl_sync(31);
-
-    /* Selection of the Generator and write Lock for ADC0 */
-    GCLK_REGS->GCLK_PCHCTRL[33] = GCLK_PCHCTRL_GEN(0)  | GCLK_PCHCTRL_CHEN_Msk;
-    pchctrl_sync(33);
+    pchctrl_enable(2, GCLK_PCHCTRL_GEN_GCLK0); // EIC
+    pchctrl_enable(20, GCLK_PCHCTRL_GEN_GCLK0); // SERCOM1_CORE
+    pchctrl_enable(21, GCLK_PCHCTRL_GEN_GCLK0); // SERCOM2_CORE
+    pchctrl_enable(22, GCLK_PCHCTRL_GEN_GCLK0); // SERCOM3_CORE
+    pchctrl_enable(28, GCLK_PCHCTRL_GEN_GCLK0); // TCC0/TCC1
+    pchctrl_enable(31, GCLK_PCHCTRL_GEN_GCLK0); // TC2/TC3
+    pchctrl_enable(33, GCLK_PCHCTRL_GEN_GCLK0); // ADC0
 
     /* Configure the APBC Bridge Clocks */
+    MCLK_REGS->MCLK_APBAMASK &= ~(MCLK_APBAMASK_WDT_Msk | MCLK_APBAMASK_RTC_Msk);
+
     MCLK_REGS->MCLK_APBCMASK = MCLK_APBCMASK_SERCOM1_Msk
                              | MCLK_APBCMASK_SERCOM2_Msk
                              | MCLK_APBCMASK_SERCOM3_Msk
                              | MCLK_APBCMASK_TCC0_Msk
                              | MCLK_APBCMASK_TC2_Msk
                              | MCLK_APBCMASK_TC3_Msk
-                             | MCLK_APBCMASK_ADC0_Msk;
+                             | MCLK_APBCMASK_ADC0_Msk
+                             ;
+
 }

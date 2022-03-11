@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=startup_samc20j16a.c system_samc20j16a.c main.c coilgun.c driver.c plib_clock.c
+SOURCEFILES_QUOTED_IF_SPACED=startup_samc20j16a.c system_samc20j16a.c main.c coilgun.c driver.c plib_clock.c machinery.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/startup_samc20j16a.o ${OBJECTDIR}/system_samc20j16a.o ${OBJECTDIR}/main.o ${OBJECTDIR}/coilgun.o ${OBJECTDIR}/driver.o ${OBJECTDIR}/plib_clock.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/startup_samc20j16a.o.d ${OBJECTDIR}/system_samc20j16a.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/coilgun.o.d ${OBJECTDIR}/driver.o.d ${OBJECTDIR}/plib_clock.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/startup_samc20j16a.o ${OBJECTDIR}/system_samc20j16a.o ${OBJECTDIR}/main.o ${OBJECTDIR}/coilgun.o ${OBJECTDIR}/driver.o ${OBJECTDIR}/plib_clock.o ${OBJECTDIR}/machinery.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/startup_samc20j16a.o.d ${OBJECTDIR}/system_samc20j16a.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/coilgun.o.d ${OBJECTDIR}/driver.o.d ${OBJECTDIR}/plib_clock.o.d ${OBJECTDIR}/machinery.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/startup_samc20j16a.o ${OBJECTDIR}/system_samc20j16a.o ${OBJECTDIR}/main.o ${OBJECTDIR}/coilgun.o ${OBJECTDIR}/driver.o ${OBJECTDIR}/plib_clock.o
+OBJECTFILES=${OBJECTDIR}/startup_samc20j16a.o ${OBJECTDIR}/system_samc20j16a.o ${OBJECTDIR}/main.o ${OBJECTDIR}/coilgun.o ${OBJECTDIR}/driver.o ${OBJECTDIR}/plib_clock.o ${OBJECTDIR}/machinery.o
 
 # Source Files
-SOURCEFILES=startup_samc20j16a.c system_samc20j16a.c main.c coilgun.c driver.c plib_clock.c
+SOURCEFILES=startup_samc20j16a.c system_samc20j16a.c main.c coilgun.c driver.c plib_clock.c machinery.c
 
 # Pack Options 
 PACK_COMMON_OPTIONS=-I "${DFP_DIR}/samc20/include"  -I "${CMSIS_DIR}/CMSIS/Core/Include"
@@ -145,6 +145,12 @@ ${OBJECTDIR}/plib_clock.o: plib_clock.c  .generated_files/flags/default/81efa716
 	@${RM} ${OBJECTDIR}/plib_clock.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus -g -D__DEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/plib_clock.o.d" -o ${OBJECTDIR}/plib_clock.o plib_clock.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
+${OBJECTDIR}/machinery.o: machinery.c  .generated_files/flags/default/f1f3eba7498ffad1c868b0bda15e99ef9d75ec11 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/machinery.o.d 
+	@${RM} ${OBJECTDIR}/machinery.o 
+	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus -g -D__DEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/machinery.o.d" -o ${OBJECTDIR}/machinery.o machinery.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
 else
 ${OBJECTDIR}/startup_samc20j16a.o: startup_samc20j16a.c  .generated_files/flags/default/7ebbb31c30d5fa26fce7a28e6640e27a395d4734 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
 	@${MKDIR} "${OBJECTDIR}" 
@@ -181,6 +187,12 @@ ${OBJECTDIR}/plib_clock.o: plib_clock.c  .generated_files/flags/default/10b8dc53
 	@${RM} ${OBJECTDIR}/plib_clock.o.d 
 	@${RM} ${OBJECTDIR}/plib_clock.o 
 	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/plib_clock.o.d" -o ${OBJECTDIR}/plib_clock.o plib_clock.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/machinery.o: machinery.c  .generated_files/flags/default/83499dcf495bfe7ec095fb6485c7bd5d3998fb16 .generated_files/flags/default/ac2ca9e3df0636ffa4b9d40c4622c146c19e8762
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/machinery.o.d 
+	@${RM} ${OBJECTDIR}/machinery.o 
+	${MP_CC}  $(MP_EXTRA_CC_PRE) -mcpu=cortex-m0plus  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -mthumb ${PACK_COMMON_OPTIONS}  -Os -ffunction-sections -mlong-calls -Wall -MP -MMD -MF "${OBJECTDIR}/machinery.o.d" -o ${OBJECTDIR}/machinery.o machinery.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 endif
 

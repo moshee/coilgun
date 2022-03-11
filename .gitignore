@@ -5,8 +5,7 @@ datasheets/*
 coilgun.X/build
 coilgun.X/debug
 coilgun.X/dist
-coilgun.X/firmware
-coilgun.X/nbproject/private
+*/nbproject/private
 *~*~
 *.swp
 *.swo

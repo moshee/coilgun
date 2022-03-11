@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "samc20j16a.h": "c",
+        "coilgun.h": "c",
+        "stdlib.h": "c"
+    }
+}

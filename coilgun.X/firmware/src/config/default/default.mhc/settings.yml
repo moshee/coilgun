@@ -1,0 +1,14 @@
+configName: default
+folderName: harmony
+format_version: v1.0
+frameworkPath: ..\..\Harmony3
+processor: ATSAMC20J16A
+projectName: harmony
+settings:
+  PackageFilter: bsp;core;core_apps_sam_c20_c21;csp;csp_apps_sam_c20_c21;dev_packs;gfx;gfx_apps_sam_c20_c21;quick_docs;touch;usb
+  FORCE_OPTIMIZATION: 'false'
+  GENERATE_BACKUP: 'true'
+  TRUSTZONE: 'false'
+  CMSISPath: .\dev_packs\arm\CMSIS\5.8.0
+  MERGE_STRATEGY: USER_ALL
+  DFPPath: .\dev_packs\Microchip\SAMC20_DFP\3.4.76\samc20\atdf\ATSAMC20J16A.atdf
