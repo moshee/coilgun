@@ -6,6 +6,8 @@
 
 cg_prog_t prog = {0};
 
+cg_sm_t sm_main, sm_display;
+
 void cg_init(cg_prog_t *prog) {
     WDT_REGS->WDT_CTRLA = 0;
 
@@ -79,7 +81,16 @@ void cg_init(cg_prog_t *prog) {
     EIC_REGS->EIC_CTRLA = EIC_CTRLA_ENABLE_Msk;
     while (EIC_REGS->EIC_SYNCBUSY & EIC_SYNCBUSY_ENABLE_Msk);
 
-    cg_sm_init(&prog->sm_main, state_idle, MSG_CONTROL);
+    cg_sm_init(&sm_main, state_idle, MSG_CONTROL);
+
+    cg_sm_t machines[] = {
+        sm_main,
+        sm_display
+    };
+
+    prog->app.machines = machines;
+    prog->app.len = sizeof(machines)/sizeof(machines[0]);
+
     cg_timer_init(&prog->blinker, 250, timer_blink);
     cg_timer_init(&prog->frame, 33, timer_frame);
 
@@ -112,7 +123,7 @@ void blink_clear(uint32_t msk) {
 }
 
 void timer_frame(void) {
-    mq_push_empty(&prog.sm_display.mq, MSG_FRAME);
+    cg_sm_dispatch_empty(&prog.app, MSG_FRAME);
 }
 
 /**
@@ -120,12 +131,7 @@ void timer_frame(void) {
  */
 
 
-cg_sm_ret_t state_idle(cg_sm_t *const sm, const mq_msg_t *const msg) {
-    /**
-     * SW0: arm
-     * SW1: charge
-     * SW2: fire
-     */
+STATE(state_idle, sm, msg) {
     cg_sm_ret_t ret;
 
     switch (msg->id) {
@@ -145,10 +151,10 @@ cg_sm_ret_t state_idle(cg_sm_t *const sm, const mq_msg_t *const msg) {
 
     case MSG_CONTROL:
         switch (msg->data.n) {
-        case MSG_CONTROL_SW0_ON:
+        case MSG_CONTROL_ARM_ON:
             ret = cg_sm_next(sm, state_armed);
             break;
-        case MSG_CONTROL_SW1_ON:
+        case MSG_CONTROL_CHG_ON:
             ret = cg_sm_next(sm, state_charging);
             break;
         default:
@@ -163,7 +169,7 @@ cg_sm_ret_t state_idle(cg_sm_t *const sm, const mq_msg_t *const msg) {
     return ret;
 }
 
-cg_sm_ret_t state_armed(cg_sm_t *const sm, const mq_msg_t *const msg) {
+STATE(state_armed, sm, msg) {
     cg_sm_ret_t ret;
 
     switch (msg->id) {
@@ -185,7 +191,7 @@ cg_sm_ret_t state_armed(cg_sm_t *const sm, const mq_msg_t *const msg) {
 
     case MSG_CONTROL:
         switch (msg->data.n) {
-        case MSG_CONTROL_SW0_OFF:
+        case MSG_CONTROL_ARM_OFF:
             ret = cg_sm_next(sm, state_idle);
             break;
         default:
@@ -201,7 +207,7 @@ cg_sm_ret_t state_armed(cg_sm_t *const sm, const mq_msg_t *const msg) {
     return ret;
 }
 
-cg_sm_ret_t state_charging(cg_sm_t *const sm, const mq_msg_t *const msg) {
+STATE(state_charging, sm, msg) {
     cg_sm_ret_t ret;
 
     switch (msg->id) {
@@ -223,7 +229,7 @@ cg_sm_ret_t state_charging(cg_sm_t *const sm, const mq_msg_t *const msg) {
 
     case MSG_CONTROL:
         switch (msg->data.n) {
-        case MSG_CONTROL_SW1_OFF:
+        case MSG_CONTROL_CHG_OFF:
             ret = cg_sm_next(sm, state_idle);
             break;
         default:
@@ -239,14 +245,14 @@ cg_sm_ret_t state_charging(cg_sm_t *const sm, const mq_msg_t *const msg) {
     return ret;
 }
 
-cg_sm_ret_t state_charging_done(cg_sm_t *const sm, const mq_msg_t *const msg) {
+STATE(state_charged, sm, msg) {
     return YIELD;
 }
 
-cg_sm_ret_t state_firing(cg_sm_t *const sm, const mq_msg_t *const msg) {
+STATE(state_ready_to_fire, sm, msg) {
     return YIELD;
 }
 
-cg_sm_ret_t state_menu(cg_sm_t *const sm, const mq_msg_t *const msg) {
+STATE(state_firing, sm, msg) {
     return YIELD;
 }

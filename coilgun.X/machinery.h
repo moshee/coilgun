@@ -58,9 +58,8 @@ typedef struct mq {
     mq_msgid_t accept; // bitmask of accepted message IDs
 } mq_t;
 
-void mq_init(mq_t *mq, mq_msgid_t accept_ids);
-int mq_push(mq_t *mq, mq_msgid_t id, mq_data_t data);
-int mq_push_empty(mq_t *mq, mq_msgid_t id);
+void mq_init(mq_t *mq, const mq_msgid_t accept_ids);
+int mq_push(mq_t *mq, const mq_msgid_t id, const mq_data_t data);
 mq_msg_t *mq_pop(mq_t *mq);
 
 /**
@@ -93,10 +92,19 @@ typedef enum cg_sm_ret {
 
 typedef cg_sm_ret_t (*cg_state_t)(cg_sm_t * const, const mq_msg_t * const);
 
+#define STATE(NAME, SM, MSG) cg_sm_ret_t NAME(cg_sm_t * const SM, const mq_msg_t * const MSG)
+
 struct cg_sm {
     cg_state_t state; // The current state of the machine.
     mq_t mq; // Message queue for this machine.
 };
+
+// struct cg_app holds all of the state machines that comprise the application.
+// The program should have one app for central dispatching of events.
+typedef struct cg_app {
+    cg_sm_t *machines;
+    int len;
+} cg_app_t;
 
 /**
  * Initialize the state machine.
@@ -108,10 +116,16 @@ struct cg_sm {
 void cg_sm_init(cg_sm_t *const sm, const cg_state_t initial, const mq_msgid_t sub);
 
 /**
+ * Dispatch a message to an array of state machines.
+ */
+void cg_sm_dispatch(cg_app_t *app, const mq_msgid_t id, const mq_data_t data);
+void cg_sm_dispatch_empty(cg_app_t *app, const mq_msgid_t id);
+
+/**
  * Advance the state machine, checking for any messages and passing them along
  * to the state function if it matches the sub list.
  */
-void cg_sm_crank(cg_sm_t *sm);
+void cg_sm_crank(cg_app_t *app);
 
 /**
  * Transition to the next state, passing the exit event to the current one and

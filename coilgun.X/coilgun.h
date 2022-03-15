@@ -52,8 +52,7 @@
 #define PIN_INJ_ENBL PORT_PB02
 
 typedef struct cg_prog {
-    cg_sm_t sm_main;
-    cg_sm_t sm_display;
+    cg_app_t app;
 
     cg_timer_t blinker;
     uint32_t blink_mask;
@@ -79,24 +78,25 @@ void cg_init(cg_prog_t *prog);
 #define MSG_FRAME BIT(4)
 
 enum MSG_CONTROL_Val {
-    MSG_CONTROL_SW0_ON,
-    MSG_CONTROL_SW0_OFF,
-    MSG_CONTROL_SW1_ON,
-    MSG_CONTROL_SW1_OFF,
-    MSG_CONTROL_SW2_ON,
-    MSG_CONTROL_SW2_OFF,
+    MSG_CONTROL_ARM_ON,
+    MSG_CONTROL_ARM_OFF,
+    MSG_CONTROL_CHG_ON,
+    MSG_CONTROL_CHG_OFF,
+    MSG_CONTROL_FIRE_PRESS,
+    MSG_CONTROL_FIRE_RELEASE,
     MSG_CONTROL_ENC_PRESS,
     MSG_CONTROL_ENC_RELEASE,
     MSG_CONTROL_ENC_UP,
     MSG_CONTROL_ENC_DOWN
 };
 
-cg_sm_ret_t state_idle(cg_sm_t *const sm, const mq_msg_t *const msg);
-cg_sm_ret_t state_armed(cg_sm_t *const sm, const mq_msg_t *const msg);
-cg_sm_ret_t state_charging(cg_sm_t *const sm, const mq_msg_t *const msg);
-cg_sm_ret_t state_charging_done(cg_sm_t *const sm, const mq_msg_t *const msg);
-cg_sm_ret_t state_firing(cg_sm_t *const sm, const mq_msg_t *const msg);
-cg_sm_ret_t state_menu(cg_sm_t *const sm, const mq_msg_t *const msg);
+STATE(state_idle, sm, msg);
+STATE(state_armed, sm, msg);
+STATE(state_charging, sm, msg);
+STATE(state_charged, sm, msg);
+STATE(state_ready_to_fire, sm, msg);
+STATE(state_firing, sm, msg);
+STATE(state_menu, sm, msg);
 
 void timer_blink(void);
 void blink_set(uint32_t msk);

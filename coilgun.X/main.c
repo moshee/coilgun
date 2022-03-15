@@ -17,14 +17,17 @@ int main(void) {
     cg_init(&prog);
 
     for (;;) {
-        cg_sm_crank(&prog.sm_main);
-        cg_sm_crank(&prog.sm_display);
+        cg_sm_crank(&prog.app);
     }
 
     return (EXIT_SUCCESS);
 }
 
 void SysTick_Handler(void) {
+    mq_data_t data = {0};
+
+    cg_sm_dispatch(&prog.app, MSG_TICK, data);
+
     cg_timer_tick(&prog.blinker);
     cg_timer_tick(&prog.frame);
 }
@@ -40,44 +43,44 @@ void EIC_Handler(void) {
         if (in & PIN_ENC_SW) {
             // ENC_SW pressed
             data.n = MSG_CONTROL_ENC_PRESS;
-            mq_push(&prog.sm_main.mq, MSG_CONTROL, data);
+            cg_sm_dispatch(&prog.app, MSG_CONTROL, data);
         } else {
             // ENC_SW released
             data.n = MSG_CONTROL_ENC_RELEASE;
-            mq_push(&prog.sm_main.mq, MSG_CONTROL, data);
+            cg_sm_dispatch(&prog.app, MSG_CONTROL, data);
         }
     }
     if (intflag & PIN_SW0) {
         if (in & PIN_SW0) {
             // SW off
-            data.n = MSG_CONTROL_SW0_OFF;
-            mq_push(&prog.sm_main.mq, MSG_CONTROL, data);
+            data.n = MSG_CONTROL_ARM_OFF;
+            cg_sm_dispatch(&prog.app, MSG_CONTROL, data);
         } else {
             // SW on
-            data.n = MSG_CONTROL_SW0_ON;
-            mq_push(&prog.sm_main.mq, MSG_CONTROL, data);
+            data.n = MSG_CONTROL_ARM_ON;
+            cg_sm_dispatch(&prog.app, MSG_CONTROL, data);
         }
     }
     if (intflag & PIN_SW1) {
         if (in & PIN_SW1) {
             // SW off
-            data.n = MSG_CONTROL_SW1_OFF;
-            mq_push(&prog.sm_main.mq, MSG_CONTROL, data);
+            data.n = MSG_CONTROL_CHG_OFF;
+            cg_sm_dispatch(&prog.app, MSG_CONTROL, data);
         } else {
             // SW on
-            data.n = MSG_CONTROL_SW1_ON;
-            mq_push(&prog.sm_main.mq, MSG_CONTROL, data);
+            data.n = MSG_CONTROL_CHG_ON;
+            cg_sm_dispatch(&prog.app, MSG_CONTROL, data);
         }
     }
     if (intflag & PIN_SW2) {
         if (in & PIN_SW2) {
             // SW off
-            data.n = MSG_CONTROL_SW2_OFF;
-            mq_push(&prog.sm_main.mq, MSG_CONTROL, data);
+            data.n = MSG_CONTROL_FIRE_RELEASE;
+            cg_sm_dispatch(&prog.app, MSG_CONTROL, data);
         } else {
             // SW on
-            data.n = MSG_CONTROL_SW2_ON;
-            mq_push(&prog.sm_main.mq, MSG_CONTROL, data);
+            data.n = MSG_CONTROL_FIRE_PRESS;
+            cg_sm_dispatch(&prog.app, MSG_CONTROL, data);
         }
     }
 

@@ -23,14 +23,14 @@ void cg_timer_enable(cg_timer_t *t, uint8_t en) {
     t->enable = en;
 }
 
-void mq_init(mq_t *mq, mq_msgid_t accept_ids) {
+void mq_init(mq_t *mq, const mq_msgid_t accept_ids) {
     memset(mq->buf, 0, sizeof mq->buf);
     mq->head = 0;
     mq->tail = 0;
     mq->accept = accept_ids;
 }
 
-int mq_push(mq_t *mq, mq_msgid_t id, mq_data_t data) {
+int mq_push(mq_t *mq, const mq_msgid_t id, const mq_data_t data) {
     if ((mq->accept & id) != id) {
         return 1;
     }
@@ -49,11 +49,6 @@ int mq_push(mq_t *mq, mq_msgid_t id, mq_data_t data) {
     return -1;
 }
 
-int mq_push_empty(mq_t *mq, mq_msgid_t id) {
-    mq_data_t data = {0};
-    return mq_push(mq, id, data);
-}
-
 mq_msg_t *mq_pop(mq_t *mq) {
     if (mq->tail != mq->head) {
         mq_msg_t *ret = &mq->buf[mq->tail];
@@ -69,15 +64,36 @@ void cg_sm_init(cg_sm_t *const sm, const cg_state_t initial, const mq_msgid_t su
     mq_init(&sm->mq, sub);
 }
 
-void cg_sm_crank(cg_sm_t *sm) {
-    cg_sm_ret_t ret;
-    mq_msg_t *msg = mq_pop(&sm->mq);
+void cg_sm_dispatch(cg_app_t *const app, const mq_msgid_t id, const mq_data_t data) {
+    cg_sm_t *sm = app->machines;
 
-    if (msg == NULL) {
-        return;
+    for (int i = 0; i < app->len; i++) {
+        mq_push(&sm->mq, id, data);
+        sm++;
+    }
+}
+
+void cg_sm_dispatch_empty(cg_app_t *const app, const mq_msgid_t id) {
+    mq_data_t data = {0};
+
+    cg_sm_dispatch(app, id, data);
+}
+
+
+void cg_sm_crank(cg_app_t *const app) {
+    cg_sm_ret_t ret;
+    mq_msg_t *msg;
+    cg_sm_t *sm = app->machines;
+
+    for (int i = 0; i < app->len; i++) {
+        msg = mq_pop(&sm->mq);
+        if (msg == NULL) {
+            return;
+        }
+        for (ret = NEXT; ret != YIELD; ret = sm->state(sm, msg));
+        sm++;
     }
     
-    for (ret = NEXT; ret != YIELD; ret = sm->state(sm, msg));
 }
 
 cg_sm_ret_t cg_sm_next(cg_sm_t *const sm, const cg_state_t next) {
