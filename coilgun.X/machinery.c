@@ -65,11 +65,15 @@ void cg_sm_init(cg_sm_t *const sm, const cg_state_t initial, const mq_msgid_t su
 }
 
 void cg_sm_dispatch(cg_app_t *const app, const mq_msgid_t id, const mq_data_t data) {
-    cg_sm_t *sm = app->machines;
+    cg_sm_t *sm;
+
+    if (app->len == 0) {
+        return;
+    }
 
     for (int i = 0; i < app->len; i++) {
+        sm = app->machines[i];
         mq_push(&sm->mq, id, data);
-        sm++;
     }
 }
 
@@ -83,15 +87,15 @@ void cg_sm_dispatch_empty(cg_app_t *const app, const mq_msgid_t id) {
 void cg_sm_crank(cg_app_t *const app) {
     cg_sm_ret_t ret;
     mq_msg_t *msg;
-    cg_sm_t *sm = app->machines;
+    cg_sm_t *sm;
 
     for (int i = 0; i < app->len; i++) {
+        sm = app->machines[i];
         msg = mq_pop(&sm->mq);
         if (msg == NULL) {
             return;
         }
         for (ret = NEXT; ret != YIELD; ret = sm->state(sm, msg));
-        sm++;
     }
     
 }

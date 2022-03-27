@@ -58,6 +58,8 @@
 extern "C" {
 #endif
 
+#define SYSTEM_CLOCK 48000000
+
 // DOM-IGNORE-END
 
 // *****************************************************************************
@@ -129,11 +131,7 @@ this interface.
   Remarks:
     This function should be called before calling other Clock library functions.
 */
-
 void CLOCK_Initialize (void);
-
-
-
 
 #ifdef __cplusplus // Provide C++ Compatibility
 }

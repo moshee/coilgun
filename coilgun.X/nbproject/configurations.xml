@@ -23,15 +23,33 @@
       <itemPath>plib_clock.c</itemPath>
       <itemPath>machinery.c</itemPath>
       <itemPath>machinery.h</itemPath>
+      <itemPath>font.h</itemPath>
+      <itemPath>graphics.c</itemPath>
+      <itemPath>graphics.h</itemPath>
+      <itemPath>ssd1305.h</itemPath>
+      <itemPath>ssd1305.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false">
+      <logicalFolder name="f1" displayName="default.mhc" projectFiles="true">
+        <itemPath>../firmware/src/config/default/default.mhc/cmsis.yml</itemPath>
+        <itemPath>../firmware/src/config/default/default.mhc/core.yml</itemPath>
+        <itemPath>../firmware/src/config/default/default.mhc/dfp.yml</itemPath>
+        <itemPath>../firmware/src/config/default/default.mhc/evsys.yml</itemPath>
+        <itemPath>../firmware/src/config/default/default.mhc/GraphSettings.yml</itemPath>
+        <itemPath>../firmware/src/config/default/default.mhc/nvmctrl.yml</itemPath>
+        <itemPath>../firmware/src/config/default/default.mhc/project.yml</itemPath>
+        <itemPath>../firmware/src/config/default/default.mhc/settings.yml</itemPath>
+        <itemPath>../firmware/src/config/default/default.mhc/tc0.yml</itemPath>
+      </logicalFolder>
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>font.c</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>.</Elem>
+    <Elem>I:/</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -181,10 +199,10 @@
         <property key="arm.vtor_adr" value="exception_table"/>
         <property key="communication.activationmode" value="nohv"/>
         <property key="communication.interface" value="swd"/>
-        <property key="communication.speed" value="${communication.speed.default}"/>
+        <property key="communication.speed" value="2"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
         <property key="firmware.path"
                   value="Press to browse for a specific firmware version"/>
         <property key="firmware.toolpack"
@@ -235,7 +253,7 @@
         <property key="arm.vtor_adr" value="exception_table"/>
         <property key="communication.activationmode" value="nohv"/>
         <property key="communication.interface" value="swd"/>
-        <property key="communication.speed" value="${communication.speed.default}"/>
+        <property key="communication.speed" value="2"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>

@@ -166,6 +166,7 @@ void CLOCK_Initialize (void) {
     pchctrl_enable(21, GCLK_PCHCTRL_GEN_GCLK0); // SERCOM2_CORE
     pchctrl_enable(22, GCLK_PCHCTRL_GEN_GCLK0); // SERCOM3_CORE
     pchctrl_enable(28, GCLK_PCHCTRL_GEN_GCLK0); // TCC0/TCC1
+    pchctrl_enable(30, GCLK_PCHCTRL_GEN_GCLK0); // TC0/TC1
     pchctrl_enable(31, GCLK_PCHCTRL_GEN_GCLK0); // TC2/TC3
     pchctrl_enable(33, GCLK_PCHCTRL_GEN_GCLK0); // ADC0
 
@@ -176,6 +177,7 @@ void CLOCK_Initialize (void) {
                              | MCLK_APBCMASK_SERCOM2_Msk
                              | MCLK_APBCMASK_SERCOM3_Msk
                              | MCLK_APBCMASK_TCC0_Msk
+                             | MCLK_APBCMASK_TC0_Msk
                              | MCLK_APBCMASK_TC2_Msk
                              | MCLK_APBCMASK_TC3_Msk
                              | MCLK_APBCMASK_ADC0_Msk

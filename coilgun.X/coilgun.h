@@ -4,6 +4,8 @@
 #include "samc20j16a.h"
 #include "machinery.h"
 #include "driver.h"
+#include "ssd1305.h"
+#include "graphics.h"
 
 #define PIN_TXD PORT_PA00
 #define PIN_RXD PORT_PA01
@@ -52,7 +54,7 @@
 #define PIN_INJ_ENBL PORT_PB02
 
 typedef struct cg_prog {
-    cg_app_t app;
+    cg_app_t super;
 
     cg_timer_t blinker;
     uint32_t blink_mask;
@@ -60,6 +62,12 @@ typedef struct cg_prog {
     cg_timer_t frame;
 
     quadrature_t q;
+
+    cg_sm_t sm_main;
+    cg_sm_t sm_display;
+
+    ssd1305_t display;
+    struct framebuffer fb;
 
     uint32_t eic_events;
 } cg_prog_t;
@@ -97,6 +105,8 @@ STATE(state_charged, sm, msg);
 STATE(state_ready_to_fire, sm, msg);
 STATE(state_firing, sm, msg);
 STATE(state_menu, sm, msg);
+
+STATE(state_display, sm, msg);
 
 void timer_blink(void);
 void blink_set(uint32_t msk);

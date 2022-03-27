@@ -16,6 +16,8 @@ extern "C" {
 
 #include "samc20j16a.h"
 
+#define LEN(x) (sizeof(x)/sizeof((x)[0]))
+
 /**
  * SysTick-powered timer
  */
@@ -94,15 +96,16 @@ typedef cg_sm_ret_t (*cg_state_t)(cg_sm_t * const, const mq_msg_t * const);
 
 #define STATE(NAME, SM, MSG) cg_sm_ret_t NAME(cg_sm_t * const SM, const mq_msg_t * const MSG)
 
+// struct cg_sm is a state machine.
 struct cg_sm {
     cg_state_t state; // The current state of the machine.
     mq_t mq; // Message queue for this machine.
 };
 
 // struct cg_app holds all of the state machines that comprise the application.
-// The program should have one app for central dispatching of events.
+// The program should have one app for centralized dispatching of events.
 typedef struct cg_app {
-    cg_sm_t *machines;
+    cg_sm_t **machines;
     int len;
 } cg_app_t;
 
@@ -121,6 +124,9 @@ void cg_sm_init(cg_sm_t *const sm, const cg_state_t initial, const mq_msgid_t su
 void cg_sm_dispatch(cg_app_t *app, const mq_msgid_t id, const mq_data_t data);
 void cg_sm_dispatch_empty(cg_app_t *app, const mq_msgid_t id);
 
+#define SM_DISPATCH(_APP, _ID, _DATA) cg_sm_dispatch((cg_app_t *)_APP, _ID, _DATA)
+#define SM_DISPATCH_EMPTY(_APP, _ID) cg_sm_dispatch_empty((cg_app_t *)_APP, _ID)
+
 /**
  * Advance the state machine, checking for any messages and passing them along
  * to the state function if it matches the sub list.
@@ -132,6 +138,8 @@ void cg_sm_crank(cg_app_t *app);
  * the entry state to the next.
  */
 cg_sm_ret_t cg_sm_next(cg_sm_t *const sm, const cg_state_t next);
+
+#define SM_NEXT(_SM, _NEXT) cg_sm_next((cg_sm_t *)(_SM), (cg_state_t)(_NEXT))
 
 typedef struct quadrature {
     uint8_t a;
